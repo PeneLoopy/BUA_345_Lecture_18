@@ -297,7 +297,7 @@ houses <- read_csv("houses.csv", show_col_types=F) |> glimpse()
 
 ---
 
-### Lecture 17 In-class Exercises - Session ID: bua345s23**
+### Lecture 18 In-class Exercises - Session ID: bua345s23**
 
 #### **Question 1 (L18) 
 
@@ -385,7 +385,9 @@ knitr::include_graphics("docs_files/images/houses_slr_output2.jpg")
 
 ---
 
-### Lecture 18 In-class Exercises - Calculating Residuals (Observed Y - Estimated Y) - 
+### Lecture 18 In-class Exercises - Calculating Residuals 
+
+  ***Residual = Observed Y - Est. Y = Model Response - Model Estimate*** 
 
 #### **Question 3 (L18) - Session ID: bua345s23**
 
@@ -511,7 +513,7 @@ head(houses, 4) |> kable()
 
 ---
 
-### Lecture 18 (HW 8 - Part 2)
+### Lecture 17 (HW 8 - Part 2)
 
 **Logistic Regression**
 
@@ -533,7 +535,7 @@ head(houses, 4) |> kable()
      - Yes or No
      - Passed or Failed
      - Survived or Not Survived (Titanic Example in Lecture 17)
-     - Late Payment or Not (Exampes in Lecture 17, HW 8, and Practice Questions)
+     - Late Payment or Not (Examples in Lecture 17, HW 8, and Practice Questions)
     
 ---
     
