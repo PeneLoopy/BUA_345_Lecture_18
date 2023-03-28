@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>BUA 345 - Lecture 18</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Penelope Pooler Eisenbies" />
+    <meta name="date" content="2023-03-28" />
+    <script src="docs_files/header-attrs/header-attrs.js"></script>
+    <link href="docs_files/panelset/panelset.css" rel="stylesheet" />
+    <script src="docs_files/panelset/panelset.js"></script>
+    <link href="docs_files/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="docs_files/tile-view/tile-view.js"></script>
+    <script src="docs_files/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="docs_files/tachyons/tachyons.min.css" rel="stylesheet" />
+    <link href="docs_files/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+background-image: url("docs_files/images/sloth_faded.png")
+background-size: cover
+
+class: bottom, right
+
+## BUA 345 - Lecture 18
+
+### Quiz 2 Review
+
+&lt;br&gt;
+
+
+#### Penelope Pooler Eisenbies
+
+#### 2023-03-28
+
+[Wikipedia Sloth Page](https://en.wikipedia.org/wiki/Sloth)
+
+---
+
+### Upcoming Dates
+
+.pull-left[
+
+- **HW 8 was due on Monday, 3/27**. 
+
+   - Grace Period ends tonight (Tues. 3/28) at midnight.
+   
+- **Quiz 2 is Thursday, March 30th**
+
+  - Practice Questions were posted on Saturday (3/25)
+
+]
+
+.pull-right[
+
+&lt;img src="docs_files/images/owl.png" width="304" /&gt;
+
+]
+
+---
+
+### Getting Started with Markdown (Updated)
+
+.pull-left[
+
+- Download Zipped R project 
+
+- Open Zipped folder and copy internal folder (R Project) to a BUA 345 folder on your computer NOT IN DOWLOADS
+
+- **Open R Project:**
+  
+  - *OPTION 1:* Click on .Rproj file to open project and RStudio
+
+  - *OPTION 2:* Open RStudio, then click File &gt; Open Project &gt; then navigate to  and click on .Rproj file.
+  
+
+- **Once Project is opened in RStudio:**
+
+  - Click on `code_data_output` file to open it.
+
+  - Click on `BUA_345_Lecture_18.Rmd` to open it.
+
+  - Run `setup` Chunk
+
+
+]
+
+.pull-right[
+
+&lt;img src="docs_files/images/beaver.png" width="320" /&gt;
+
+]
+
+---
+
+### Setup
+
+.pull-left[
+
+- The setup chunk shows the packages needed for this demo.   
+
+- R will install specified packages if needed (only required once after R is installed)  
+
+- R will load specified packaged (required every time you start a new R session)  
+
+- The first time you run this code, R will install these packages which will be slow.  
+
+- **If you get warnings, that's okay.**  
+
+- If you get **error messages**, I (or TA), can help you.
+
+]
+
+
+.pull-right[
+
+&lt;img src="docs_files/images/owl.png" width="304" /&gt;
+
+]
+
+
+---
+
+### Setup Chunk for Lecture 18
+
+
+```r
+# this line specifies options for default options for all R Chunks
+knitr::opts_chunk$set(echo=T, highlight=T)
+# suppress scientific notation
+options(scipen=100)
+
+# install helper package that loads and installs other packages, if needed
+if (!require("pacman")) install.packages("pacman", repos = "http://lib.stat.cmu.edu/R/CRAN/")
+
+# install and load required packages
+pacman::p_load(pacman,tidyverse, magrittr, olsrr, gridExtra, ggiraphExtra, knitr, viridis, blorr)
+
+# verify packages
+p_loaded()
+```
+
+```
+##  [1] "blorr"          "xaringanthemer" "png"            "viridis"       
+##  [5] "viridisLite"    "knitr"          "ggiraphExtra"   "gridExtra"     
+##  [9] "olsrr"          "magrittr"       "forcats"        "stringr"       
+## [13] "dplyr"          "purrr"          "readr"          "tidyr"         
+## [17] "tibble"         "ggplot2"        "tidyverse"      "pacman"
+```
+
+**NOTES:**
+
+- Please make sure you can open the provided R project for the practice questions and run the setup chunk without errors.
+- If you are having trouble installing/loading any packages, please come to office hour or make an appointment with me or course TA.
+
+---
+
+
+### Lectures 9 - 11 (HW 5)
+
+**Correlation, SLR, and MLR**
+
+- Simple Linear Regression and Multiple Linear Regression
+- How to calculate and interpret a correlation matrix in R
+- Revive of Scatterplot Matrices
+
+
+```r
+# imported dataset is saved as an object named houses
+houses &lt;- read_csv("houses.csv", show_col_types=F) |&gt; glimpse()
+```
+
+```
+## Rows: 200
+## Columns: 4
+## $ Price     &lt;dbl&gt; 217314, 238792, 222330, 206688, 88207, 236936, 90678, 104556…
+## $ Area      &lt;dbl&gt; 2498, 2250, 2712, 2284, 1480, 2300, 957, 1673, 3003, 957, 14…
+## $ Bathrooms &lt;dbl&gt; 2.5, 2.5, 3.0, 2.5, 1.5, 2.5, 1.0, 2.0, 3.5, 1.0, 1.5, 1.0, …
+## $ Age       &lt;dbl&gt; 14, 10, 1, 17, 14, 16, 49, 18, 88, 49, 3, 180, 14, 33, 19, 3…
+```
+
+
+---
+
+### Lecture 17 In-class Exercises - Session ID: bua345s23**
+
+#### **Question 1 (L18) 
+
+What is the correlation between `House_Age` and `Living_Area` in the houses dataset?
+
+#### **Question 2 (L18) 
+
+Are there any multicollinear variables in the following dataset?
+
+
+
+```r
+houses |&gt; cor() |&gt; round(2) # correlation matrix
+```
+
+```
+##           Price  Area Bathrooms   Age
+## Price      1.00  0.77      0.71 -0.38
+## Area       0.77  1.00      0.66 -0.22
+## Bathrooms  0.71  0.66      1.00 -0.52
+## Age       -0.38 -0.22     -0.52  1.00
+```
+
+---
+
+### Correlation Matrices and Scatterplot matrices
+
+
+.pull-left[
+
+
+```
+##           Price  Area Bathrooms   Age
+## Price      1.00  0.77      0.71 -0.38
+## Area       0.77  1.00      0.66 -0.22
+## Bathrooms  0.71  0.66      1.00 -0.52
+## Age       -0.38 -0.22     -0.52  1.00
+```
+
+
+#### Scatterplot matrices graphically display the information in the correlation matrix.
+
+]
+
+.pull-right[
+
+&lt;img src="docs_files/figure-html/scatterplot matrix-1.png" width="504" style="background-color: #3D3D3D; padding:1px;" /&gt;
+
+]
+
+---
+
+### Specifing a SLR or MLR model in R
+
+- Model specified with `ols_regress` in the `olsrr` package OR with `lm` (base R command)
+   - Model format is always the same
+   
+- Interpretation of R&lt;sup&gt;2&lt;/sup&gt; in SLR
+
+
+```r
+(houses_slr &lt;- ols_regress(Price ~ Area, data = houses))
+```
+
+#### Abridged Output
+
+&lt;img src="docs_files/images/houses_slr_output1.jpg" width="511" /&gt;&lt;img src="docs_files/images/houses_slr_output2.jpg" width="715" /&gt;
+
+---
+
+### Lecture 18 In-class Exercises 
+
+#### **Question 3 (L18) - Session ID: bua345s23**
+
+The correlation between `Selling_Price` and `Living_Area` is 0.772 and the R&lt;sup&gt;2&lt;/sup&gt; for the SLR model is 0.596.
+
+What proportion of the variability in selling price is explained by living area?
+
+#### Abridged Output
+
+&lt;img src="docs_files/images/houses_slr_output1.jpg" width="511" /&gt;&lt;img src="docs_files/images/houses_slr_output2.jpg" width="715" /&gt;
+
+---
+
+### Lecture 18 In-class Exercises - Calculating Residuals (Observed Y - Estimated Y) - 
+
+#### **Question 3 (L18) - Session ID: bua345s23**
+
+What is the residual for the second house shown in the data below?
+
+
+```r
+houses_mlr &lt;- ols_regress(Price ~ Area + Bathrooms + Age, data = houses) # specify model
+
+houses &lt;- houses |&gt;
+  mutate(Est_Selling_Price = lm(houses_mlr$model) |&gt; predict(houses) |&gt; round()) # add regression estimates
+
+head(houses, 4) |&gt; kable()
+```
+
+
+
+|  Price| Area| Bathrooms| Age| Est_Selling_Price|
+|------:|----:|---------:|---:|-----------------:|
+| 217314| 2498|       2.5|  14|            229114|
+| 238792| 2250|       2.5|  10|            215025|
+| 222330| 2712|       3.0|   1|            260195|
+| 206688| 2284|       2.5|  17|            215436|
+
+---
+
+### Additional Questions about MLR (Not in PointSolutions)
+
+- **Why is the natural log (LN) transformation of Y is sometimes needed?**
+
+  - Recall in R the command to do this is `log`.  In excel it is `ln`
+
+  - How do we back transform estimates from a model when LN(Y) is the response?
+
+     -  Can be done in Excel or R using `exp` function
+
+- How to interpret Multiple Linear Regression output
+
+  - **What hypothesis is being tested in each line of output?**
+
+  - **What do we conclude if the P-value (sometimes labeled `Sig`) is greater than 0.05?**
+  
+  - Note that in Backward Elimination we set a P-value cutoff of 0.1 (`prem = 0.1`), but we can later exclude variables when determining the final model. 
+  
+
+---
+
+### Lectures 12 and 13 (HW 6)
+
+**Categorical Regression - Parallel Lines Model**
+
+- How is this model different from SLR and?
+
+- How do we determine if there two or more separate intercepts?
+  
+- **NOTE** that slopes for ALL categories are the same in a parallel lines model.  
+
+**HW 6 Remodeled Houses Model Equations:**
+    
+- Model for un-remodeled Houses:
+
+  - `Price = 166419.209 + 118.14*Square_Feet`
+    
+- For Remodeled Houses combine baseline intercept with difference due to remodeling (`RemodeledYes`)
+    
+- Model for Remodeled Houses:    
+
+  - `Price = 166419.209 + 118.14*Square_Feet + 90325.284`
+  
+  - `Price = (166419.209 + 90325.284) + 118.14*Square_Feet`
+  
+  - `Price = 256744.5 + 118.14*Square_Feet` 
+  
+---
+
+### Lectures 12 and 13 (HW 6)
+
+**Categorical Regression - Interaction Model**
+
+- How is this model different from SL
+
+  - How do we determine if there two or more separate intercepts?
+  - How is this model different from Parallel Lines Model
+  - How do we determine if there two or more different slopes?
+    
+**HW 6 Diamonds Model Equations:**
+    
+- Model for Colorless Diamonds:    
+
+  - `Price = -4446.56 + 10476.13*Weight`
+    
+- Model for Faint Yellow Diamonds: 
+
+  - `Price = -4446.56 + 10476.13*Weight + 3464.41 - 6670.53*Weight`
+  - `Price = (-4446.56 + 3464.41) + (10476.13 - 6670.53)*Weight`
+  - `Price = -982.15 + 3805.6*Weight`
+                                   
+**Quiz 2 Practice Questions 11 and 12**
+
+- Will Review these in class if there is interest.
+- Question(s) on Quiz 2 will be similar and test R usage skills as well as ability to read and interpret interaction model output.
+
+---
+
+### Lectures 14, 15, 16 (HW 8 - Part 1)
+
+**Model Selection**
+
+- Examining Data using Correlation and Scatterplot Matrices (See above)
+
+- Definition of Multicollinearity and how to determine if two variables are multicollinear
+
+- Definitions and **R commands** for the following methods
+
+  - Backward Elimination
+  - Forward Selection
+  - Stepwise Selection
+  - Best Subsets
+
+- Interpreting Measures of Model Fit
+
+  - Adjusted R&lt;sup&gt;2&lt;/sup&gt;
+  - AIC
+  - Mallow's CP
+
+- Interpreting Final Model
+
+  - Same as for other MLR models
+  - Remember to back transform estimate of LN transformation is used
+  - Residual = Observed Y - Estimate of Y
+
+---
+
+### Lecture 18 (HW 8 - Part 2)
+
+**Logistic Regression**
+
+- Definition of Odds: Odds is the ratio of the probability of an event occurring to the probability of it not occurring.
+
+  - Recall that Odds can be calculated from probability
+  - Probability is denoted as ***P*** or ***P(Event)***, e.g. ***P(Late Payment)***
+
+    - `\(Odds = \frac{P(Event)}{1-P(Event)} = \frac{P}{1-P}\)`
+
+- Converting Odds to Probability
+
+    - `\(P = \frac{Odds}{1+Odds}\)`
+
+- LN Odds are used as link function in Logistic Regression
+
+  - Logistic Regression is used when Y is binary, a categorical variable with two categories such as:
+
+     - Yes or No
+     - Passed or Failed
+     - Survived or Not Survived (Titanic Example in Lecture 17)
+     - Late Payment or Not (Exampes in Lecture 17, HW 8, and Practice Questions)
+    
+---
+    
+### More about Logistic Regression
+
+- We specify the Logistic Regression Model in almost the same way as a MLR model EXCEPT we use **`glm`(generalized linear model)** instead of **`lm` (linear model)**.
+ 
+  - **GLM** relaxes the **LM** assumption that the response is quantitative and normal.
+   
+- The link function required for logistic regression is LN Odds (Log Odds)
+
+  - **Estimated Response, Y', is the LN Odds of an Event**
+  - **Convert LN Odds, Y' to Probability as:** `\(P = \frac{e^{Y'}}{1 + e{Y'}}\)`
+
+     - Recall that in R and Excel, `\(e^{x}\)` is calculated as `exp(x)` e.g. `\(e^{3}\)` is `exp(3)` in R or `=exp(3)` in Excel.
+     
+     - Estimated LN Odds from Logistic Regression are converted to probability for interpretation (see below)
+    
+
+```r
+log_odds &lt;- -1.4067                   # answer from HW 8 - Part 1 - Question 5
+exp(log_odds)/(1 + exp(log_odds))     # calculation in R using exp function
+plogis(log_odds)                      # calculation in R using plogis function
+plogis(-1.4067)                       # calculation in R using plogis function and number
+```
+
+```
+## [1] 0.1967551
+## [1] 0.1967551
+## [1] 0.1967551
+```
+
+---
+
+background-image: url("docs_files/images/tired_panda_faded.png")
+background-size: cover
+
+.pull-left[
+
+### Key Points from This Section
+
+.bg-azure.b--dark_cyan.ba.bw2.br3.shadow-5.ph2[
+
+- Quiz 2 is primarily based on material from
+ 
+   - Lectures 9 - 17
+   - HW Assignments 5, 6, 7, 8 Pt. 1, 8 Pt. 2
+   
+- Topics covered
+
+  - Simple Linear Regression
+  - Multiple Linear Regression (with all quantitative terms)
+  - Categorical Regression
+     - Parallel Lines Model
+     - Interaction Model
+  - Model Selection
+     - Backward, Forward, Stepwise
+     - Best Subset
+  - Goodness of Model Fit
+     - Adj. R&lt;sup&gt;2&lt;/sup&gt;, AIC, C(p)
+  - Logistic Regression
+     - Odds, Log Odds
+     - Converting Odds and Log Odds to Prob.
+    Model Estimates
+]
+
+]
+
+.pull-right[
+
+.bg-azure.b--dark_cyan.ba.bw2.br3.shadow-5.ph3[
+You may submit an 'Engagement Question' about each lecture until midnight on the day of the lecture. **A minimum of four submissions are required during the semester.**
+]
+
+]
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "%current%/%total%",
+"highlightStyle": "tomorrow-night-bright",
+"highlightLines": true,
+"ratio": "16:9",
+"countIncrementalSlides": true,
+"keep_md": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
